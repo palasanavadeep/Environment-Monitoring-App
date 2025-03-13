@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FcLike } from 'react-icons/fc';
+import dateFormatter from '../components/dateFormatter';
 
 const BlogCard = ({ _id, title, likes, image, createdAt, owner, isFeatured }) => {
   return isFeatured ? (
@@ -12,7 +13,7 @@ const BlogCard = ({ _id, title, likes, image, createdAt, owner, isFeatured }) =>
         
         </div>
         <h2 className="text-xl font-bold mt-2">{title}</h2>
-        <div className="text-gray-500 text-sm mt-1">By {owner.username} • {createdAt}</div>
+        <div className="text-gray-500 text-sm mt-1">By {owner.username} • {dateFormatter(createdAt)}</div>
       </div>
     </div>
   ) : (
@@ -24,7 +25,7 @@ const BlogCard = ({ _id, title, likes, image, createdAt, owner, isFeatured }) =>
         <div className='flex items-center justify-center '> 20K Views  .  {likes}  <FcLike /> </div>
         </div>
         <h3 className="font-bold text-lg mt-2">{title}</h3>
-        <p className="text-gray-600 text-sm mt-1">By {owner.username} • {createdAt}</p>
+        <p className="text-gray-600 text-sm mt-1">By {owner.username} • {dateFormatter(createdAt)}</p>
         <Link to={`/blogs/${_id}`} className="text-blue-500 text-sm font-semibold hover:underline mt-2 block">
           Read more...
         </Link>
