@@ -20,10 +20,10 @@ function DateTimeCard() {
   }, []);
 
   return (
-    <article className="flex flex-col justify-center items-center p-8 w-full max-w-lg bg-white rounded-2xl shadow-lg text-gray-900 border border-gray-300">
-      <h2 className="text-3xl text-gray-700">{city}</h2>
-      <time className="mt-4 text-6xl text-gray-900 font-extrabold">{time}</time> 
-      <time className="mt-2 text-lg text-gray-500">{date}</time>
+    <article className="flex flex-col justify-center items-center p-8 w-full max-w-lg bg-[#0F172A] rounded-2xl shadow-lg text-white border border-gray-300">
+      <h2 className="text-3xl text-white-700">{city}</h2>
+      <time className="mt-4 text-6xl text-white-900 font-extrabold">{time}</time> 
+      <time className="mt-2 text-lg text-white-500">{date}</time>
     </article>
   );
 }

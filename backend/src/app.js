@@ -19,7 +19,7 @@ app.use(express.urlencoded({ limit: "16kb", extended: true }));
 // app.use(express.static("public"));
 app.use(cookieParser());
 
-const allowedOrigins = [process.env.CORS_ORIGIN, "http://localhost:5173", "http://localhost:8000","http://localhost:5174"];
+const allowedOrigins = [process.env.CORS_ORIGIN, "http://localhost:5173", "http://localhost:8000","http://localhost:5174","http://localhost:5175","http://localhost:5176"];
 
 app.use(cors({
     origin: allowedOrigins,

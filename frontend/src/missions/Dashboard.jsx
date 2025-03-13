@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, useContext } from "react";
 import dayjs from "dayjs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -5,13 +6,13 @@ import axios from "axios";
 import { Context } from "../components/ContextProvider.jsx";
 
 const levels = [
-  { id: "L1", points: 2050, unlocked: false },
-  { id: "L2", points: 1050, unlocked: false },
-  { id: "L3", points: 2050, unlocked: false },
-  { id: "L4", points: 2050, unlocked: false },
-  { id: "L5", points: 2050, unlocked: false },
-  { id: "L6", points: 2050, unlocked: false },
-  { id: "L7", points: 2050, unlocked: false },
+  { id: "L1", points: 1000, unlocked: false },
+  { id: "L2", points: 2000, unlocked: false },
+  { id: "L3", points: 3000, unlocked: false },
+  { id: "L4", points: 4000, unlocked: false },
+  { id: "L5", points: 5000, unlocked: false },
+  { id: "L6", points: 6000, unlocked: false },
+  { id: "L7", points: 7000, unlocked: false },
 ];
 
 const Dashboard = () => {
@@ -19,21 +20,24 @@ const Dashboard = () => {
   const daysInMonth = currentDate.daysInMonth();
   const today = dayjs().date();
   const scrollRef = useRef(null);
-  const [missionDate, setMissionDate] = useState(dayjs().date(1));
+  const [missionDate, setMissionDate] = useState(today);
   const [missions, setMissions] = useState([]);
   const { user } = useContext(Context);
 
   // Levels unlocking logic
   useEffect(() => {
+    console.log("User Level:", user?.user);
+    // console.log(today);
+    
     const updatedLevels = levels.map((level, index) => {
-      if (user?.user?.level > index) {
+      if (user?.user?.user.level > index) {
         level.unlocked = true;
       }
       return level;
     });
     // Update levels after user data is fetched or changed
     levels.splice(0, levels.length, ...updatedLevels);
-  }, [user?.user?.level]);
+  },[]);
 
   // Fetch missions based on missionDate or currentDate
   useEffect(() => {
@@ -65,9 +69,9 @@ const Dashboard = () => {
       <div className="p-4 bg-white shadow-lg rounded-xl mb-6 flex justify-between items-center gap-4">
         {/* Points Section */}
         <div className="bg-green-100 p-4 rounded-xl w-1/3 shadow-md text-center transform hover:scale-105 transition-all">
-          <h2 className="text-md font-semibold text-gray-700">Points Earned</h2>
+          <h2 className="text-md font-semibold text-gray-700">Coins Earned</h2>
           <p className="text-3xl font-extrabold text-green-700">
-            {user?.user?.totalPoints || 10}
+            {user?.user?.user?.totalPoints || "0000"}
           </p>
           <button className="mt-2 px-4 py-2 text-sm bg-green-600 text-white rounded-full shadow-md hover:bg-green-700 transition-all">
             Redeem
@@ -121,11 +125,11 @@ const Dashboard = () => {
               ></circle>
             </svg>
             <div className="absolute text-3xl font-bold text-green-700">
-              {user?.user?.crntPoints || 0}
+              {user?.user?.user?.crntPoints || 0}
             </div>
           </div>
           <p className="text-gray-600 text-xs">Total Points</p>
-          <p className="text-xs text-gray-500">{user?.user?.crntPoints || 0} Pts Away</p>
+          <p className="text-xs text-gray-500">{ user?.user?.user?.crntPoints || 0} Pts </p>
         </div>
       </div>
 
@@ -144,13 +148,20 @@ const Dashboard = () => {
           {daysArray.map((day) => {
             const dayDate = currentDate.date(day); // Get the date object for the day
             const isFuture = dayDate.isAfter(dayjs(), "day"); // Check if the day is in the future
-
+            // console.log(today);
+            // console.log(daysArray[0]);
+            
             return (
               <div
                 key={day}
-                onClick={!isFuture ? () => handleDateClick(day) : null} // Only allow click on past/current days
+                onClick={()=> {
+                  if(!isFuture){
+                    handleDateClick(day)
+                  }
+                  setMissionDate(day);
+                }} // Only allow click on past/current days
                 className={`flex flex-col items-center w-12 h-16 p-3 rounded-lg shadow-md text-center cursor-pointer bg-white transition-all duration-300 hover:bg-green-100 ${
-                  day === today ? "border-2 border-green-500 text-green-500" : "border border-gray-300"
+                  day === missionDate ? "border-2 border-green-500 text-green-500" : "border border-gray-300"
                 } ${isFuture ? "opacity-50 pointer-events-none" : ""}`} // Lock future dates
               >
                 {isFuture ? (

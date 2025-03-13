@@ -1,9 +1,50 @@
 import { useState } from "react";
 import { FiImage, FiSend } from "react-icons/fi";
+import axios from "axios"; // Import axios
 
 export default function BlogForm() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [image, setImage] = useState(null); // State to hold the selected image file
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    if (file) {
+      setImage(file); // Update image state
+    }
+  };
+
+  const handleAddBlog = async () => {
+    if (!title || !content || !image) {
+      alert("All fields are required.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("blogImage", image); // Append the image file
+
+    try {
+      // Send a POST request to your API to create the blog
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/blog/create`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Important for file uploads
+        },
+        withCredentials: true, // Include credentials for authentication
+      });
+
+      console.log("Blog created successfully:", response.data);
+      alert("Blog created successfully!");
+      // Optionally reset the form after successful submission
+      setTitle("");
+      setContent("");
+      setImage(null);
+    } catch (error) {
+      console.error("Error creating blog:", error.response ? error.response.data : error.message);
+      alert("Failed to create blog. Please try again.");
+    }
+  };
 
   return (
     <div className="flex justify-center gap-6 p-6 w-full h-screen bg-gray-100">
@@ -29,16 +70,24 @@ export default function BlogForm() {
             placeholder="Write your blog content here..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full p-3 border border-gray-400 rounded-lg h-[350px] text-lg focus:ring-4 focus:ring-indigo-400 focus:outline-none shadow-md bg-gray-50"
+            className="w-full p-3 border border-gray-400 rounded-lg h-[200px] text-lg focus:ring-4 focus:ring-indigo-400 focus:outline-none shadow-md bg-gray-50"
           ></textarea>
         </div>
         <div className="flex items-center justify-between p-3 bg-indigo-200 rounded-lg w-full shadow-lg mt-3 border border-indigo-400">
           <label className="flex items-center cursor-pointer text-indigo-700 text-md hover:text-indigo-900">
             <FiImage className="text-2xl mr-2" />
             <span>Add Image</span>
-            <input type="file" accept="image/*" className="hidden" />
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange} // Handle image file change
+            />
           </label>
-          <button className="flex items-center bg-indigo-700 text-white px-5 py-2 rounded-lg text-md hover:bg-indigo-800 shadow-lg">
+          <button
+            onClick={handleAddBlog}
+            className="flex items-center bg-indigo-700 text-white px-5 py-2 rounded-lg text-md hover:bg-indigo-800 shadow-lg"
+          >
             <FiSend className="text-2xl mr-2" /> Post
           </button>
         </div>

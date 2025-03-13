@@ -4,18 +4,21 @@ import WeatherDetailsCard from "./WeatherDetailsCard";
 import ForecastCard from "./ForecastCard";
 import AirQualityCard from "./AirQualityCard";
 import PollutantHealthCard from "./PollutantHealthCard";
+import TemperatureGraphs from "./TemperatureGraphs";
+import AirQualityPieChart from "./AirQualityPieChart";
 
 function WeatherDashboardWhiteCelsius() {
   const [weatherData, setWeatherData] = useState(null);
   const [currentWeather, setCurrentWeather] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [airPollutants, setAirPollutants] = useState(null);
 
   useEffect(() => {
     try {
       // forecast data
       fetch("http://127.0.0.1:5000")
         .then((response) => response.json())
-        .then(async(data) => {
+        .then(async (data) => {
           if (!data.error) {
             setWeatherData(data);
             // current weather data
@@ -58,6 +61,7 @@ function WeatherDashboardWhiteCelsius() {
           <DateTimeCard city={location} className="h-auto" />
           {/* Row 2: Forecast (Starts After Date & Time) */}
           <ForecastCard className="h-auto" forecastDays={forecast} />
+          <TemperatureGraphs forecast={forecast}/>
         </div>
 
         {/* Column 2 (Right Side) */}
@@ -72,10 +76,11 @@ function WeatherDashboardWhiteCelsius() {
             humidity={currentWeather?.current_weather.humidity?.toFixed(1) ?? "N/A"}
             pressure={currentWeather?.current_weather.pressure ?? "N/A"}
             windSpeed={currentWeather?.current_weather.wind_speed?.toFixed(1) ?? "N/A"}
-            uvIndex="N/A"
+            uvIndex="11"
           />
           {/* Row 2: Air Quality Card */}
-          <AirQualityCard />
+          <AirQualityCard setAirPollutants={setAirPollutants}/>
+           <AirQualityPieChart pollutants={airPollutants} />
           {/* Row 3: Pollution Health Effects Card */}
           <PollutantHealthCard />
         </div>

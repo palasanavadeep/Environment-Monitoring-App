@@ -26,7 +26,7 @@ const SignInPage = () => {
           console.log(res.data);
           console.log("User logged in successfully");
           
-          setUser({ user: res.data || null , isLoggedIn: true });
+          setUser({ user: { ...res.data} || null , isLoggedIn: true });
           navigate("/");
         })
         .catch((err) => {
