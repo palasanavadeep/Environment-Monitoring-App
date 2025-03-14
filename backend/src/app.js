@@ -12,6 +12,7 @@ import {uploadOnCloudinary} from "./utils/cloudinary.js";
 import {upload} from "./utils/multer.js"
 import Community from "./models/community.js";
 import Post from "./models/post.js"
+import generateText from "./chatbot/gemini.js";
 // import Mission from "./models/missions.js";
 const app = express();
 app.use(express.json({ limit: "16kb" }));
@@ -25,6 +26,18 @@ app.use(cors({
     origin: allowedOrigins,
     credentials: true
 }));
+
+// Route to generate text using Gemini API
+app.post("/generate", async (req, res) => {
+    const { prompt } = req.body;
+    if (!prompt) {
+        return res.status(400).json({ error: "Prompt is required" });
+    }
+
+    const response = await generateText(prompt);
+    res.json({ response });
+});
+
 
 // ✅ Signup (with JWT token generation)
 app.post("/signup", asyncHandler(async (req, res) => {
@@ -551,6 +564,8 @@ app.get("/search/:query", asyncHandler(async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }))
+
+
 
 
 export  { app };

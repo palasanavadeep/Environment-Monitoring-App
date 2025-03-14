@@ -18,6 +18,7 @@ import WeatherPage from './pages/WeatherPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 // import { MyProvider } from './components/ContextProvider'
 import CommDetailsPage from './communityfold/CommDetailsPage.jsx';
+import Chatbot from './pages/ChatBot.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage />,
+      },
+      {
+        path : "/chatbot",
+        element : <Chatbot />
       },
       {
         path : "/blogs", 
