@@ -4,9 +4,10 @@ const CreateCommunityModal = ({ onClose, onCreate }) => {
   const [communityName, setCommunityName] = useState("");
   const [communityTheme, setCommunityTheme] = useState("");
   const [communityDescription, setCommunityDescription] = useState("");
+  const [communityImage, setCommunityImage] = useState(null); // New state for the image file
 
   const handleDone = () => {
-    if (!communityName || !communityTheme || !communityDescription) {
+    if (!communityName || !communityTheme || !communityDescription || !communityImage) {
       alert("All fields are required!");
       return;
     }
@@ -16,13 +17,23 @@ const CreateCommunityModal = ({ onClose, onCreate }) => {
       name: communityName,
       theme: communityTheme,
       description: communityDescription,
+      image: communityImage, // Include the image in the submitted data
     });
 
     // Reset fields
     setCommunityName("");
     setCommunityTheme("");
     setCommunityDescription("");
+    setCommunityImage(null); // Reset the image
     onClose(); // Close the modal
+  };
+
+  // Handle image file selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // Get the first selected file
+    if (file) {
+      setCommunityImage(file); // Set the image file to state
+    }
   };
 
   return (
@@ -58,6 +69,22 @@ const CreateCommunityModal = ({ onClose, onCreate }) => {
             rows={4}
             required
           />
+          
+          {/* New Image Upload Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Community Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="w-full p-2 border rounded-lg"
+            />
+            {communityImage && (
+              <div className="mt-2">
+                <span className="text-sm text-gray-500">Selected Image: {communityImage.name}</span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="mt-6 flex justify-end space-x-4">
           <button

@@ -213,14 +213,24 @@ app.get("/getCommunities/all",asyncHandler(async (req, res) => {
 }))
 
 //Verified
-app.post("/createCommunity",verifyJWT, asyncHandler(async (req, res) => {
+app.post("/createCommunity",verifyJWT , upload.single("communityImage"), asyncHandler(async (req, res) => {
     try {
         const { name, description,theme } = req.body;
         const createdBy = req.user._id; // Assuming the user ID is extracted from JWT
+        const communityImagePath = req?.file?.path;
 
         // Validate required fields
         if (!name || !description) {
             return res.status(400).json({ message: "Name and description are required" });
+        }
+        if(!communityImagePath){
+            return res.status(400).json({ message: "Community Image is required" });
+        }
+
+        const communityImage = await uploadOnCloudinary(communityImagePath);
+
+        if(!communityImage){
+            res.status(500).send("ERROR :: while uploading to cloudinary")
         }
 
         // Check if community with the same name exists
@@ -235,6 +245,7 @@ app.post("/createCommunity",verifyJWT, asyncHandler(async (req, res) => {
             theme,
             description,
             createdBy,
+            image : communityImage?.secure_url || "",
             members: [createdBy] // Add creator as first member
         });
 
@@ -506,5 +517,40 @@ app.get("/isMissionCompletedByUser/:missionId" ,verifyJWT,asyncHandler(async (re
         res.status(500).json({ message: error.message });
     }
 }))
+
+
+app.get("/search/:query", asyncHandler(async (req, res) => {
+    try {
+        const { query } = req.params;
+        const regex = new RegExp(query, "i");
+        const result = {
+            users: [],
+            communities: [],
+            posts: [],
+            blogs: []
+        };
+        const communitiyResults = await Community.find({ name: regex },{members:0,posts:0});
+        if(communitiyResults.length > 0){
+            result.communities = communitiyResults;
+        }
+        const userResults = await User.find({ username: regex },{refreshToken : 0});
+        if(userResults.length > 0){
+            result.users = userResults;
+        }
+        const postResults = await Post.find({ title: regex });
+        if(postResults.length > 0){
+            result.posts = postResults;
+        }
+        const blogResults = await Blog.find({ title: regex },{description:0 , content:0});
+        if(blogResults.length > 0){
+            result.blogs = blogResults;
+        }
+        res.status(200).json(result);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}))
+
 
 export  { app };

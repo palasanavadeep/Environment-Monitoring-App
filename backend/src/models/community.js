@@ -27,6 +27,10 @@ const communitySchema = new Schema(
             ref: "User",
             
         }],
+        image: {
+            type: String,
+            required: true,
+        },
         posts:[{
             type:Schema.Types.ObjectId,
         }]

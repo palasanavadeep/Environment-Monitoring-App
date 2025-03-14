@@ -94,7 +94,8 @@ const CommunityPage = () => {
 
   const handleCreateCommunity = (details) => {
     axios
-      .post("http://localhost:8000/createCommunity", details, {
+      .post(`${import.meta.env.VITE_BACKEND_URL}/createCommunity`, details, {
+        
         withCredentials: true,
       })
       .then((res) => {
